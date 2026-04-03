@@ -1,0 +1,420 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .app { min-height: 600px; background: var(--color-background-tertiary); font-family: var(--font-sans); }
+  .login-wrap { min-height: 600px; display: flex; align-items: center; justify-content: center; background: var(--color-background-tertiary); }
+  .login-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 36px 32px; width: 100%; max-width: 380px; }
+  .login-logo { text-align: center; margin-bottom: 24px; }
+  .login-icon { width: 56px; height: 56px; background: #0C6B3F; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px; color: white; }
+  .login-title { font-size: 17px; font-weight: 500; color: var(--color-text-primary); }
+  .login-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+  .form-group { margin-bottom: 14px; }
+  label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); display: block; margin-bottom: 5px; }
+  input[type=text], input[type=password] { width: 100%; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); outline: none; transition: border 0.15s; }
+  input:focus { border-color: #0C6B3F; box-shadow: 0 0 0 2px rgba(12,107,63,0.15); }
+  .btn-login { width: 100%; padding: 10px; background: #0C6B3F; color: white; border: none; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px; transition: background 0.15s; }
+  .btn-login:hover { background: #0a5a34; }
+  .error-msg { background: #FCEBEB; color: #A32D2D; border: 0.5px solid #F7C1C1; border-radius: var(--border-radius-md); padding: 9px 12px; font-size: 13px; margin-bottom: 14px; display: none; }
+  .pw-wrap { position: relative; }
+  .pw-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); padding: 2px 4px; }
+  .header { background: #0C6B3F; color: white; padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
+  .header-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header h1 { font-size: 16px; font-weight: 500; line-height: 1.2; flex: 1; }
+  .header p { font-size: 11px; opacity: 0.7; margin-top: 1px; }
+  .logout-btn { background: rgba(255,255,255,0.15); border: 0.5px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: var(--border-radius-md); font-size: 12px; cursor: pointer; transition: background 0.15s; }
+  .logout-btn:hover { background: rgba(255,255,255,0.25); }
+  .nav { background: #0a5a34; display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .nav-btn { color: rgba(255,255,255,0.7); padding: 10px 18px; font-size: 13px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .nav-btn.active { color: white; border-bottom-color: #4ade80; background: rgba(255,255,255,0.08); }
+  .nav-btn:hover:not(.active) { color: white; background: rgba(255,255,255,0.05); }
+  .content { padding: 18px; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 13px 15px; }
+  .stat-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 3px; }
+  .stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-sub { font-size: 10px; color: var(--color-text-secondary); margin-top: 1px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 18px; margin-bottom: 14px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group-full { grid-column: 1/-1; }
+  textarea, select { width: 100%; padding: 8px 12px; font-size: 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); outline: none; transition: border 0.15s; }
+  textarea { resize: vertical; min-height: 75px; line-height: 1.5; }
+  textarea:focus, select:focus { border-color: #0C6B3F; box-shadow: 0 0 0 2px rgba(12,107,63,0.15); }
+  .file-upload { border: 1.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 18px; text-align: center; cursor: pointer; background: var(--color-background-secondary); transition: all 0.15s; }
+  .file-upload:hover { border-color: #0C6B3F; }
+  .file-upload input[type=file] { display: none; }
+  .file-upload-text { font-size: 12px; color: var(--color-text-secondary); margin-top: 5px; }
+  .uploaded-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .file-tag { background: #e8f5ef; color: #0a5a34; font-size: 12px; padding: 3px 9px; border-radius: 20px; display: flex; align-items: center; gap: 5px; border: 0.5px solid #9fd4b8; }
+  .file-tag .rm { cursor: pointer; opacity: 0.6; } .file-tag .rm:hover { opacity:1; }
+  .btn { padding: 8px 18px; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: #0C6B3F; color: white; } .btn-primary:hover { background: #0a5a34; }
+  .btn-secondary { background: transparent; color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary); } .btn-secondary:hover { background: var(--color-background-secondary); }
+  .btn-danger { background: transparent; color: #A32D2D; border: 0.5px solid #F7C1C1; font-size: 12px; padding: 4px 9px; } .btn-danger:hover { background: #FCEBEB; }
+  .btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+  .search-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; }
+  .search-inp { flex:1; padding: 8px 12px; font-size: 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); outline: none; }
+  .search-inp:focus { border-color: #0C6B3F; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: #e8f5ef; color: #0a5a34; border: 0.5px solid #9fd4b8; white-space: nowrap; }
+  .patient-list { display: flex; flex-direction: column; gap: 8px; }
+  .patient-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 13px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: border 0.15s; }
+  .patient-card:hover { border-color: #0C6B3F; } .patient-card.selected { border-color: #0C6B3F; background: #f0faf5; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e8f5ef; color: #0a5a34; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; flex-shrink: 0; border: 0.5px solid #9fd4b8; }
+  .patient-info { flex: 1; min-width: 0; }
+  .patient-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .patient-phone { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; }
+  .detail-panel { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 18px; }
+  .detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .detail-avatar { width: 52px; height: 52px; border-radius: 50%; background: #e8f5ef; color: #0a5a34; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 500; border: 0.5px solid #9fd4b8; flex-shrink: 0; }
+  .detail-name { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+  .detail-phone { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .section-label { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
+  .desc-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; font-size: 13px; color: var(--color-text-primary); line-height: 1.6; margin-bottom: 14px; }
+  .report-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); margin-bottom: 5px; }
+  .report-name { font-size: 12px; color: var(--color-text-primary); flex:1; }
+  .report-date { font-size: 10px; color: var(--color-text-secondary); }
+  .empty-state { text-align: center; padding: 32px 16px; color: var(--color-text-secondary); }
+  .empty-icon { font-size: 30px; margin-bottom: 8px; }
+  .empty-text { font-size: 13px; }
+  .toast { position: fixed; bottom: 18px; right: 18px; background: #0C6B3F; color: white; padding: 10px 18px; border-radius: var(--border-radius-md); font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; }
+  .change-pw-link { font-size: 12px; color: #0C6B3F; cursor: pointer; text-decoration: underline; text-align: center; margin-top: 14px; display: block; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 14px 0; }
+  @media (max-width:580px) { .form-grid{grid-template-columns:1fr;} .two-col{grid-template-columns:1fr;} .stats{grid-template-columns:1fr 1fr;} }
+</style>
+
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-icon">✚</div>
+        <div class="login-title">Akal Sewa Charitable Society</div>
+        <div class="login-sub">Patient Management System</div>
+      </div>
+      <div class="error-msg" id="login-error">Incorrect username or password.</div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="Enter username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+          <button class="pw-toggle" onclick="togglePw('login-pass',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <button class="btn-login" onclick="doLogin()">Login</button>
+      <span class="change-pw-link" onclick="showChangePw()">Change password</span>
+    </div>
+  </div>
+</div>
+
+<div id="change-pw-screen" style="display:none">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-icon">🔒</div>
+        <div class="login-title">Change Password</div>
+        <div class="login-sub">Akal Sewa Charitable Society</div>
+      </div>
+      <div class="error-msg" id="cp-error"></div>
+      <div class="form-group">
+        <label>Current Username</label>
+        <input type="text" id="cp-user" placeholder="Enter current username" />
+      </div>
+      <div class="form-group">
+        <label>Current Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="cp-old" placeholder="Enter current password" />
+          <button class="pw-toggle" onclick="togglePw('cp-old',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="form-group">
+        <label>New Username</label>
+        <input type="text" id="cp-new-user" placeholder="Enter new username" />
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="cp-new" placeholder="Enter new password" />
+          <button class="pw-toggle" onclick="togglePw('cp-new',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="cp-confirm" placeholder="Confirm new password" />
+          <button class="pw-toggle" onclick="togglePw('cp-confirm',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <button class="btn-login" onclick="doChangePw()">Update Credentials</button>
+      <span class="change-pw-link" onclick="backToLogin()">Back to login</span>
+    </div>
+  </div>
+</div>
+
+<div id="main-app" style="display:none" class="app">
+  <div class="header">
+    <div class="header-icon">✚</div>
+    <div style="flex:1">
+      <h1>Akal Sewa Charitable Society</h1>
+      <p>Patient Management System</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;opacity:0.8" id="logged-in-user"></span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showTab('add')">Add Patient</button>
+    <button class="nav-btn" onclick="showTab('records')">Patient Records</button>
+  </div>
+  <div class="content">
+    <div id="tab-dashboard">
+      <div class="stats">
+        <div class="stat-card"><div class="stat-label">Total Patients</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">Registered</div></div>
+        <div class="stat-card"><div class="stat-label">With Reports</div><div class="stat-value" id="stat-reports">0</div><div class="stat-sub">Have medical files</div></div>
+        <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="stat-month">0</div><div class="stat-sub">New admissions</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Patients</div>
+        <div id="recent-list"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No patients yet.</div></div></div>
+      </div>
+    </div>
+    <div id="tab-add" style="display:none">
+      <div class="card">
+        <div class="card-title">Register New Patient</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Patient Full Name *</label><input type="text" id="inp-name" placeholder="Full name" /></div>
+          <div class="form-group"><label>Mobile Number *</label><input type="text" id="inp-phone" placeholder="e.g. 98765 43210" /></div>
+          <div class="form-group"><label>Age</label><input type="number" id="inp-age" placeholder="Age" min="0" max="120" /></div>
+          <div class="form-group"><label>Gender</label><select id="inp-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="form-group form-group-full"><label>Medical Description / Diagnosis</label><textarea id="inp-desc" placeholder="Symptoms, diagnosis, treatment notes, medications..."></textarea></div>
+          <div class="form-group form-group-full">
+            <label>Medical Reports / Files</label>
+            <div class="file-upload" onclick="document.getElementById('file-input').click()">
+              <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="handleFiles(this)" />
+              <div style="font-size:22px">📎</div>
+              <div class="file-upload-text">Click to upload reports, X-rays, prescriptions, lab results<br><span style="font-size:11px;opacity:0.7">PDF, JPG, PNG, DOC supported</span></div>
+            </div>
+            <div class="uploaded-files" id="file-preview"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+          <button class="btn btn-primary" onclick="savePatient()">Save Patient Record</button>
+        </div>
+      </div>
+    </div>
+    <div id="tab-records" style="display:none">
+      <div class="search-row">
+        <input class="search-inp" type="text" placeholder="Search by name or mobile number..." oninput="filterPatients(this.value)" />
+        <span class="badge" id="count-badge">0 patients</span>
+      </div>
+      <div class="two-col">
+        <div><div class="patient-list" id="patient-list"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No records found.</div></div></div></div>
+        <div>
+          <div id="detail-placeholder" class="empty-state" style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:50px 16px;">
+            <div class="empty-icon">📋</div><div class="empty-text">Select a patient to view details</div>
+          </div>
+          <div id="detail-panel" class="detail-panel" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_USER = 'admin';
+const DEFAULT_PASS = 'akal1234';
+
+function getCreds() {
+  try {
+    const c = localStorage.getItem('akal_creds');
+    return c ? JSON.parse(c) : {username: DEFAULT_USER, password: DEFAULT_PASS};
+  } catch(e) { return {username: DEFAULT_USER, password: DEFAULT_PASS}; }
+}
+function saveCreds(u,p) { localStorage.setItem('akal_creds', JSON.stringify({username:u,password:p})); }
+
+let patients = [];
+let pendingFiles = [];
+let selectedId = null;
+let isLoggedIn = false;
+
+function loadPatients() {
+  try { patients = JSON.parse(localStorage.getItem('akal_patients')||'[]'); } catch(e) { patients=[]; }
+}
+
+function savePatients() {
+  try { localStorage.setItem('akal_patients', JSON.stringify(patients)); } catch(e) {}
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}else{inp.type='password';btn.textContent='👁';}
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const creds = getCreds();
+  const err = document.getElementById('login-error');
+  if(u===creds.username && p===creds.password) {
+    err.style.display='none';
+    isLoggedIn=true;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main-app').style.display='';
+    document.getElementById('logged-in-user').textContent = u;
+    loadPatients(); updateStats(); renderRecent();
+    document.getElementById('login-pass').value='';
+  } else {
+    err.style.display='';
+    document.getElementById('login-pass').value='';
+    document.getElementById('login-pass').focus();
+  }
+}
+
+function doLogout() {
+  isLoggedIn=false;
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('login-screen').style.display='';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  document.getElementById('login-error').style.display='none';
+  showTab('dashboard');
+}
+
+function showChangePw() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('change-pw-screen').style.display='';
+  document.getElementById('cp-error').style.display='none';
+}
+function backToLogin() {
+  document.getElementById('change-pw-screen').style.display='none';
+  document.getElementById('login-screen').style.display='';
+}
+function doChangePw() {
+  const u = document.getElementById('cp-user').value.trim();
+  const old = document.getElementById('cp-old').value;
+  const nu = document.getElementById('cp-new-user').value.trim();
+  const np = document.getElementById('cp-new').value;
+  const nc = document.getElementById('cp-confirm').value;
+  const err = document.getElementById('cp-error');
+  const creds = getCreds();
+  err.style.display='';
+  if(u!==creds.username||old!==creds.password){err.textContent='Current username or password is incorrect.';return;}
+  if(!nu){err.textContent='New username cannot be empty.';return;}
+  if(np.length<4){err.textContent='New password must be at least 4 characters.';return;}
+  if(np!==nc){err.textContent='New passwords do not match.';return;}
+  saveCreds(nu,np);
+  err.style.display='none';
+  showToast('Credentials updated successfully!');
+  setTimeout(backToLogin,1000);
+  ['cp-user','cp-old','cp-new-user','cp-new','cp-confirm'].forEach(id=>document.getElementById(id).value='');
+}
+
+function getInitials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+
+function showTab(tab) {
+  ['dashboard','add','records'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===tab?'':'none';});
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{b.classList.toggle('active',['dashboard','add','records'][i]===tab);});
+  if(tab==='dashboard'){renderRecent();}
+  if(tab==='records'){renderList();}
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent=patients.length;
+  document.getElementById('stat-reports').textContent=patients.filter(p=>p.files&&p.files.length>0).length;
+  const now=new Date();
+  document.getElementById('stat-month').textContent=patients.filter(p=>{const d=new Date(p.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).length;
+}
+
+function handleFiles(input) {
+  Array.from(input.files).forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=e=>{pendingFiles.push({name:f.name,size:f.size,type:f.type,data:e.target.result,date:new Date().toLocaleDateString('en-IN')});renderFilePreviews();};
+    reader.readAsDataURL(f);
+  });
+  input.value='';
+}
+
+function renderFilePreviews() {
+  document.getElementById('file-preview').innerHTML=pendingFiles.map((f,i)=>`<div class="file-tag">📄 ${f.name.length>22?f.name.slice(0,20)+'...':f.name}<span class="rm" onclick="pendingFiles.splice(${i},1);renderFilePreviews()">✕</span></div>`).join('');
+}
+
+function savePatient() {
+  const name=document.getElementById('inp-name').value.trim();
+  const phone=document.getElementById('inp-phone').value.trim();
+  if(!name){alert('Please enter patient name.');return;}
+  if(!phone){alert('Please enter mobile number.');return;}
+  const p={id:Date.now(),name,phone,age:document.getElementById('inp-age').value,gender:document.getElementById('inp-gender').value,desc:document.getElementById('inp-desc').value.trim(),files:[...pendingFiles],date:new Date().toISOString()};
+  patients.unshift(p); savePatients(); clearForm(); showToast('Patient saved successfully!');
+  setTimeout(()=>showTab('records'),700);
+}
+
+function clearForm() {
+  ['inp-name','inp-phone','inp-age','inp-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inp-gender').value=''; pendingFiles=[]; renderFilePreviews();
+}
+
+function deletePatient(id) {
+  if(!confirm('Delete this patient record?'))return;
+  patients=patients.filter(p=>p.id!==id); savePatients(); renderList();
+  document.getElementById('detail-panel').style.display='none';
+  document.getElementById('detail-placeholder').style.display=''; selectedId=null;
+}
+
+function renderList(filter='') {
+  const list=document.getElementById('patient-list');
+  const filtered=filter?patients.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())||p.phone.includes(filter)):patients;
+  document.getElementById('count-badge').textContent=filtered.length+' patient'+(filtered.length!==1?'s':'');
+  if(!filtered.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No patients found.</div></div>';return;}
+  list.innerHTML=filtered.map(p=>`<div class="patient-card ${selectedId===p.id?'selected':''}" onclick="showDetail(${p.id})"><div class="avatar">${getInitials(p.name)}</div><div class="patient-info"><div class="patient-name">${p.name}</div><div class="patient-phone">📞 ${p.phone}${p.age?' · Age '+p.age:''}${p.gender?' · '+p.gender:''}</div><div class="patient-phone">${p.files&&p.files.length?'📎 '+p.files.length+' file'+(p.files.length>1?'s':''):'No files'} · ${new Date(p.date).toLocaleDateString('en-IN')}</div></div></div>`).join('');
+}
+
+function renderRecent() {
+  const list=document.getElementById('recent-list');
+  const recent=patients.slice(0,5);
+  if(!recent.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No patients yet. Add your first patient.</div></div>';return;}
+  list.innerHTML=recent.map(p=>`<div class="patient-card" onclick="showTab('records');setTimeout(()=>showDetail(${p.id}),50)"><div class="avatar">${getInitials(p.name)}</div><div class="patient-info"><div class="patient-name">${p.name}</div><div class="patient-phone">📞 ${p.phone} · ${new Date(p.date).toLocaleDateString('en-IN')}</div></div><span class="badge">${p.files&&p.files.length?p.files.length+' file'+(p.files.length>1?'s':''):'No files'}</span></div>`).join('');
+}
+
+function showDetail(id) {
+  selectedId=id;
+  const p=patients.find(x=>x.id===id); if(!p)return;
+  renderList(document.querySelector('.search-inp')?document.querySelector('.search-inp').value:'');
+  document.getElementById('detail-panel').style.display='';
+  document.getElementById('detail-placeholder').style.display='none';
+  document.getElementById('detail-panel').innerHTML=`
+    <div class="detail-header">
+      <div class="detail-avatar">${getInitials(p.name)}</div>
+      <div style="flex:1">
+        <div class="detail-name">${p.name}</div>
+        <div class="detail-phone">📞 ${p.phone}${p.age?' · Age '+p.age:''}${p.gender?' · '+p.gender:''}</div>
+        <div class="detail-phone" style="font-size:11px;margin-top:2px">Registered: ${new Date(p.date).toLocaleString('en-IN')}</div>
+      </div>
+      <button class="btn btn-danger" onclick="deletePatient(${p.id})">Delete</button>
+    </div>
+    <div class="section-label">Medical description</div>
+    <div class="desc-box">${p.desc||'<span style="color:var(--color-text-secondary);font-style:italic">No description added.</span>'}</div>
+    <div class="section-label">Medical reports (${p.files?p.files.length:0})</div>
+    ${p.files&&p.files.length?p.files.map(f=>`<div class="report-item"><span style="font-size:14px">${f.type&&f.type.startsWith('image')?'🖼️':'📄'}</span><span class="report-name">${f.name}</span><span class="report-date">${f.date}</span><a href="${f.data}" download="${f.name}" style="font-size:12px;color:#0C6B3F;text-decoration:none;font-weight:500">↓</a></div>`).join(''):'<div style="font-size:13px;color:var(--color-text-secondary);padding:6px 0;">No reports uploaded.</div>'}
+  `;
+}
+
+function filterPatients(val) {
+  renderList(val); selectedId=null;
+  document.getElementById('detail-panel').style.display='none';
+  document.getElementById('detail-placeholder').style.display='';
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent='✓ '+msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
